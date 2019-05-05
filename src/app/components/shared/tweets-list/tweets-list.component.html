@@ -1,0 +1,14 @@
+<div class="list-group">
+  <li
+    class="list-group-item list-group-item-action list-group-item-secondary"
+    *ngFor="let tweet of tweets | slice: startPage:paginationLimit"
+  >
+    <app-tweet [tweet]="tweet"></app-tweet>
+  </li>
+  <button class="btn btn-primary" *ngIf="paginationLimit > increment" (click)="showLessItems()">
+      Show {{increment}} less
+  </button>
+  <button class="btn btn-primary" *ngIf="paginationLimit < tweets.length" (click)="showMoreItems()">
+    Show {{increment}} more
+  </button>
+</div>

@@ -1,0 +1,7 @@
+<app-profile-picture
+  class="tweet-profile-picture float-left"
+  [photoUrl]="tweet.user.photo"
+>
+</app-profile-picture>
+<p class="tweet-body">{{ tweet.text }}</p>
+<p [title]="tweet.insertedAt" class="timestamp">{{ DateTimeHelperService.timeSince(tweet.insertedAt) }} ago</p>

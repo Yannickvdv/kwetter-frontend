@@ -1,9 +1,9 @@
-import { User } from "../../models/user.model";
-import { Observable } from "rxjs/index";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Observable } from "rxjs/index";
 import { Tweet } from "src/app/models/tweet.model";
 import { RestService } from "src/app/rest.service";
-import { HttpClient } from "@angular/common/http";
+import { User } from "../../models/user.model";
 
 @Injectable()
 export class UserService extends RestService {

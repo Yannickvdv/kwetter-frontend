@@ -7,7 +7,7 @@ export class User {
   website: string;
   bio: string;
   role: string;
-  language: string;
+  language: "English" | "Dutch";
   photo: string;
   tweets: Tweet[];
   mentions: Tweet[];

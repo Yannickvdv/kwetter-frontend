@@ -1,11 +1,12 @@
-import { Observable, throwError } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { retry, catchError } from "rxjs/operators";
+import { Observable, throwError } from "rxjs";
+import { catchError, retry } from "rxjs/operators";
 
 export abstract class RestService {
-  protected baseUrl = "http://localhost:8080/Kwetter/api";
+  protected baseUrl = "http://localhost:8080/kwetter/api";
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) {
+  }
 
   // Http Options
   httpOptions = {
@@ -16,15 +17,19 @@ export abstract class RestService {
 
   protected get(relativeUrl: string): Observable<any> {
     return this.httpClient
-      .get(this.baseUrl + relativeUrl).pipe(
+      .get(this.baseUrl + relativeUrl, this.httpOptions).pipe(
       retry(1),
       catchError(this.handleError)
     );
   }
 
-  protected post(relativeUrl: string, data: any): Observable<any> {
+  protected post(relativeUrl: string, data: any, headers?: any): Observable<any> {
+    let combinedHeaders = this.httpOptions;
+    if (headers) {
+      combinedHeaders = {...this.httpOptions, ...{ headers: new HttpHeaders(headers)}};
+    }
     return this.httpClient
-      .post(this.baseUrl + relativeUrl, JSON.stringify(data), this.httpOptions)
+      .post(this.baseUrl + relativeUrl, JSON.stringify(data), combinedHeaders)
       .pipe(
         retry(1),
         catchError(this.handleError)

@@ -3,40 +3,47 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
-import { User } from "../models/user.model";
+import { JWT } from "../models/jwt.model";
 import { RestService } from "../rest.service";
 
 @Injectable({ providedIn: "root" })
 export class AuthenticationService extends RestService {
-    private currentUserSubject: BehaviorSubject<User>;
-    public currentUser: Observable<User>;
+    private currentJWTSubject: BehaviorSubject<JWT>;
+    public currentJWT: Observable<JWT>;
 
     constructor(private http: HttpClient) {
         super(http);
-        this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem("currentUser")));
-        this.currentUser = this.currentUserSubject.asObservable();
+        this.currentJWTSubject = new BehaviorSubject<JWT>(JSON.parse(localStorage.getItem("currentJWT")));
+        this.currentJWT = this.currentJWTSubject.asObservable();
     }
 
-    public get currentUserValue(): User {
-        return this.currentUserSubject.value;
+    public get currentJWTValue(): JWT {
+        return this.currentJWTSubject.value;
+    }
+
+    register(name: string, password: string, language: string) {
+    return this.post("/auth/register", {name, password, language})
+        .pipe(map(jwt => this.saveCurrentJWT(jwt)));
     }
 
     login(username: string, password: string) {
-        return this.post("/users/authenticate", {username, password})
-            .pipe(map(user => {
-                // login successful if there's a jwt token in the response
-                if (user && user.token) {
-                    // store user details and jwt token in local storage to keep user logged in between page refreshes
-                    localStorage.setItem("currentUser", JSON.stringify(user));
-                    this.currentUserSubject.next(user);
-                }
-                return user;
-            }));
+        const headers = { "Content-Type": "application/x-www-form-urlencoded" };
+        return this.post("/auth/login", {username, password}, headers)
+        .pipe(map(jwt => this.saveCurrentJWT(jwt)));
     }
 
     logout() {
-        // remove user from local storage to log user out
-        localStorage.removeItem("currentUser");
-        this.currentUserSubject.next(null);
+        localStorage.removeItem("currentJWT");
+        this.currentJWTSubject.next(null);
     }
+
+    private saveCurrentJWT = function(jwt: JWT) {
+        // login successful if there's a jwt token in the response
+        if (jwt && jwt.token) {
+            // store JWT details in local storage to keep JWT user logged in between page refreshes
+            localStorage.setItem("currentJWT", JSON.stringify(jwt));
+            this.currentJWT.Subject.next(jwt);
+        }
+        return jwt;
+    };
 }

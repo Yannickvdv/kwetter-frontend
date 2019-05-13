@@ -1,9 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { first } from "rxjs/operators";
-import { UserService } from "src/app/components/profile/profile.service";
 
+import { first } from "rxjs/operators";
 import { AlertService } from "src/app/helpers/alert.service";
 import { AuthenticationService } from "src/app/helpers/authentication.service";
 
@@ -21,21 +20,19 @@ export class RegisterComponent implements OnInit {
       private formBuilder: FormBuilder,
       private router: Router,
       private authenticationService: AuthenticationService,
-      private userService: UserService,
       private alertService: AlertService
   ) {
       // redirect to home if already logged in
-      if (this.authenticationService.currentUserValue) {
+      if (this.authenticationService.currentJWTValue) {
           this.router.navigate(["/"]);
       }
   }
 
   ngOnInit() {
-      this.registerForm = this.formBuilder.group({
-          firstName: ["", Validators.required],
-          lastName: ["", Validators.required],
+    this.registerForm = this.formBuilder.group({
           username: ["", Validators.required],
-          password: ["", [Validators.required, Validators.minLength(6)]]
+          password: ["", Validators.required],
+          language: ["", Validators.required]
       });
   }
 
@@ -50,8 +47,12 @@ export class RegisterComponent implements OnInit {
           return;
       }
 
+      const username = this.registerForm.get("username").value;
+      const password = this.registerForm.get("password").value;
+      const language = this.registerForm.get("language").value;
+
       this.loading = true;
-      this.userService.register(this.registerForm.value)
+      this.authenticationService.register(username, password, language)
           .pipe(first())
           .subscribe(
               data => {

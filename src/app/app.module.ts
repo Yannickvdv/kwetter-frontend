@@ -9,7 +9,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { AppRoutingModule } from "./app-routing.module";
 
 // Services
-import { UserService } from "./components/profile/profile.service";
+import { ProfileService } from "./components/profile/profile.service";
+import { UserService } from "./services/user.service";
 
 // Components
 import { AppComponent } from "./app.component";
@@ -22,10 +23,11 @@ import { ProfileStatisticsComponent } from "./components/profile/profile-statist
 import { ProfileTweetsComponent } from "./components/profile/profile-tweets/profile-tweets.component";
 import { ProfileComponent } from "./components/profile/profile.component";
 import { UserInformationComponent } from "./components/profile/user-information/user-information.component";
+import { RegisterComponent } from "./components/register/register.component";
+import { LanguageDropdownComponent } from "./components/shared/language-dropdown/language-dropdown.component";
 import { ProfilePictureComponent } from "./components/shared/profile-picture/profile-picture.component";
 import { TweetComponent } from "./components/shared/tweet/tweet.component";
 import { TweetsListComponent } from "./components/shared/tweets-list/tweets-list.component";
-import { RegisterComponent } from './components/register/register.component';
 
 @NgModule({
   declarations: [
@@ -42,10 +44,11 @@ import { RegisterComponent } from './components/register/register.component';
     TweetComponent,
     HomeComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    LanguageDropdownComponent
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, ReactiveFormsModule, HttpClientModule],
-  providers: [UserService],
+  providers: [UserService, ProfileService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
